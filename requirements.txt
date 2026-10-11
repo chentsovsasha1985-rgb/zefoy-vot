@@ -1,5 +1,6 @@
+playwright
+textual
+easyocr
+pyenchant
 requests
-beautifulsoup4
-selenium
-pillow
-pytesseract
+Pillow
