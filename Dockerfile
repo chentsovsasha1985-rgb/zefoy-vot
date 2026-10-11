@@ -30,11 +30,14 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Принудительно скачиваем и устанавливаем браузер Chromium для работы автоматизации
+# Скачиваем и устанавливаем браузер Chromium для работы автоматизации
 RUN pip install playwright && playwright install chromium
 
 # Копируем весь остальной код бота в контейнер
 COPY . .
 
-# Команда для автоматического запуска бота при старте контейнера
-CMD ["python", "main.py"]
+# Принудительно настраиваем пути поиска модулей для Python (включая корень и папку src)
+ENV PYTHONPATH="/app:/app/src:${PYTHONPATH}"
+
+# Команда для автоматического запуска бота с автоматическим поиском файла main.py
+CMD ["sh", "-c", "if [ -f /app/src/main.py ]; then python /app/src/main.py; else python /app/main.py; fi"]
