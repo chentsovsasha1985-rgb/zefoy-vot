@@ -1,5 +1,5 @@
 """
-Zefoy-CLI Automation - Short Entry Point
+Zefoy-CLI Automation - Docker Compatible Entry Point
 Repository: https://github.com
 """
 import argparse
@@ -8,12 +8,9 @@ import sys
 import os
 import warnings
 
-# Жестко прописываем пути для Render, чтобы исправить ModuleNotFoundError
-current_dir = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(current_dir)
-sys.path.append(os.path.join(current_dir, "src"))
-sys.path.append("/app")
-sys.path.append("/app/src")
+# Жесткое исправление путей поиска модулей для Docker на Render
+sys.path.insert(0, "/app")
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from browser.automation import ZefoyAutomation, SERVICES, create_automation
 from utils.timer import wait_with_progress
@@ -37,8 +34,8 @@ async def main() -> None:
     parser = argparse.ArgumentParser(description="Zefoy CLI Automation Tool")
     parser.add_argument("url", nargs="?", help="TikTok video URL")
     parser.add_argument("--service", choices=list(SERVICES.keys()), help="Automation service to use")
-    parser.add_argument("--headless", action="store_true", default=False, help="Run browser in headless mode")
-    parser.add_argument("--auto-captcha", action="store_true", default=False, help="Enable automatic CAPTCHA solving")
+    parser.add_argument("--headless", action="store_true", default=True, help="Run browser in headless mode")
+    parser.add_argument("--auto-captcha", action="store_true", default=True, help="Enable automatic CAPTCHA solving")
     parser.add_argument("--no-wait", action="store_true", default=False, help="Disable automatic waiting on rate limits")
     parser.add_argument("--verbose", action="store_true", default=False, help="Enable verbose logging")
     parser.add_argument("--proxy", help="Proxy server URL")
@@ -52,7 +49,7 @@ async def main() -> None:
         await clear_cookies_standalone()
         if not args.url: return
 
-    # Ваша реальная ссылка на видео в TikTok
+    # Ваша ссылка автоматически подставляется здесь
     url = "https://tiktok.com"
     print(f"Target URL set to: {url}")
 
@@ -62,7 +59,7 @@ async def main() -> None:
         print(f"Site check failed: {message}")
         return
 
-    # Автоматически выбираем просмотры (views)
+    # Автоматически выбираем просмотры (views) для накрутки
     service = args.service or "views"
     print(f"Selected service: {service}")
 
