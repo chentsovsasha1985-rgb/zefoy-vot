@@ -237,13 +237,13 @@ async def run_automation(
         else:
             # Detect and verify requested service is available
             print_section("Service Status")
-            await automation.detect_available_services()
+                        await automation.detect_available_services()
             automation.print_service_status_with_selection()
             
-            if not automation._available_services.get(service, 
-            print(f"\n {error(f'Service \"{service}\" is not available!')}")                                          
+            if not automation._available_services.get(service):
+                print(f"\n {error(f'Service \"{service}\" is not available!')}")                                          
                 return
-        
+
         service_name = SERVICES[service]["name"]
         print_section(f"Starting {service_name} Automation")
         
