@@ -8,8 +8,12 @@ import sys
 import os
 import warnings
 
-# Исправление ошибки ModuleNotFoundError: No module named 'browser'
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+# Жестко прописываем пути для Render, чтобы исправить ModuleNotFoundError
+current_dir = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(current_dir)
+sys.path.append(os.path.join(current_dir, "src"))
+sys.path.append("/app")
+sys.path.append("/app/src")
 
 from browser.automation import ZefoyAutomation, SERVICES, create_automation
 from utils.timer import wait_with_progress
@@ -48,9 +52,8 @@ async def main() -> None:
         await clear_cookies_standalone()
         if not args.url: return
 
-    # Ваша ссылка автоматически подставляется здесь
+    # Ваша реальная ссылка на видео в TikTok
     url = "https://tiktok.com"
-    
     print(f"Target URL set to: {url}")
 
     print("Checking zefoy.com availability...")
@@ -59,7 +62,7 @@ async def main() -> None:
         print(f"Site check failed: {message}")
         return
 
-    # Автоматически выбираем просмотры (views), если сервис не указан в аргументах
+    # Автоматически выбираем просмотры (views)
     service = args.service or "views"
     print(f"Selected service: {service}")
 
