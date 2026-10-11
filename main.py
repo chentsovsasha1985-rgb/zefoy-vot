@@ -5,7 +5,12 @@ Repository: https://github.com
 import argparse
 import asyncio
 import sys
+import os
 import warnings
+
+# Исправление ошибки ModuleNotFoundError: No module named 'browser'
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+
 from browser.automation import ZefoyAutomation, SERVICES, create_automation
 from utils.timer import wait_with_progress
 from utils.health_check import check_site_status
@@ -33,7 +38,7 @@ async def main() -> None:
     parser.add_argument("--no-wait", action="store_true", default=False, help="Disable automatic waiting on rate limits")
     parser.add_argument("--verbose", action="store_true", default=False, help="Enable verbose logging")
     parser.add_argument("--proxy", help="Proxy server URL")
-    parser.add_argument("--count", type=int, default=1, help="Target number of successful interactions")
+    parser.add_argument("--count", type=int, default=100, help="Target number of successful interactions")
     parser.add_argument("--clear-cookies", action="store_true", help="Clear zefoy.com cookies before starting")
     
     args = parser.parse_args()
@@ -43,10 +48,10 @@ async def main() -> None:
         await clear_cookies_standalone()
         if not args.url: return
 
-    url = args.url or input("\nEnter TikTok Video URL: ").strip()
-    if not url:
-        print("URL cannot be empty. Exiting...")
-        return
+    # Ваша ссылка автоматически подставляется здесь
+    url = "https://tiktok.com"
+    
+    print(f"Target URL set to: {url}")
 
     print("Checking zefoy.com availability...")
     is_up, message = check_site_status()
@@ -54,20 +59,12 @@ async def main() -> None:
         print(f"Site check failed: {message}")
         return
 
-    service = args.service
-    if not service:
-        services_list = list(SERVICES.keys())
-        for i, s in enumerate(services_list, 1):
-            print(f"  [{i}] {s.capitalize()}")
-        try:
-            choice = int(input("\nSelect a service (number): ").strip())
-            service = services_list[choice - 1]
-        except (ValueError, IndexError):
-            print("Invalid or no service selected. Exiting...")
-            return
+    # Автоматически выбираем просмотры (views), если сервис не указан в аргументах
+    service = args.service or "views"
+    print(f"Selected service: {service}")
 
     automation = create_automation(
-        headless=args.headless, auto_captcha=args.auto_captcha,
+        headless=True, auto_captcha=True,
         verbose=args.verbose, proxy_url=args.proxy
     )
     
